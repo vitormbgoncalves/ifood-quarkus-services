@@ -1,16 +1,20 @@
 package com.github.vitormbgoncalves.ifood;
 
+import com.github.vitormbgoncalves.ifood.dto.*;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 
+import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Path("/restaurantes")
 @Produces(MediaType.APPLICATION_JSON)
@@ -18,37 +22,42 @@ import java.util.Optional;
 @Tag(name = "restaurante")
 public class RestauranteResource {
 
+  @Inject
+  RestauranteMapper restauranteMapper;
+
   @GET
-  public List<Restaurante> buscar(){
-    return Restaurante.listAll();
+  public List<RestauranteDTO> buscarRestaurantes(){
+    Stream<Restaurante> restaurantes = Restaurante.streamAll();
+    return restaurantes.map(r -> restauranteMapper.toRestauranteDTO(r)).collect(Collectors.toList());
   }
 
   @POST
   @Transactional
   @APIResponse(responseCode = "201", description = "Caso restaurante seja cadastrado com sucesso")
-  public Response adicionar(Restaurante dto) {
-    dto.persist();
+  public Response adicionarRestaurante(@Valid AdcionarRestauranteDTO dto) {
+    Restaurante restaurante = restauranteMapper.toRestaurante(dto);
+    restaurante.persist();
     return Response.status(Status.CREATED).build();
   }
 
   @PUT
-  @Path("{id}")
+  @Path("{idRestaurante}")
   @Transactional
-  public void atualizar(@PathParam("id") Long id, Restaurante dto) {
-    Optional<Restaurante> restauranteOp = Restaurante.findByIdOptional(id);
+  public void atualizarRestaurante(@PathParam("idRestaurante") Long idRestaurante, AtualizarRestuaranteDTO dto) {
+    Optional<Restaurante> restauranteOp = Restaurante.findByIdOptional(idRestaurante);
     if(restauranteOp.isEmpty()) {
       throw new NotFoundException();
     }
     Restaurante restaurante = restauranteOp.get();
-    restaurante.nome = dto.nome;
+    restauranteMapper.toRestaurante(dto, restaurante);
     restaurante.persist();
   }
 
   @DELETE
-  @Path("{id}")
+  @Path("{idRestaurante}")
   @Transactional
-  public void delete(@PathParam("id") Long id) {
-    Optional<Restaurante> restauranteOp = Restaurante.findByIdOptional(id);
+  public void removerResturante(@PathParam("idRestaurante") Long idRestaurante) {
+    Optional<Restaurante> restauranteOp = Restaurante.findByIdOptional(idRestaurante);
 
     restauranteOp.ifPresentOrElse(Restaurante::delete, () -> {
       throw new NotFoundException();
@@ -57,67 +66,68 @@ public class RestauranteResource {
 
   //Pratos
 
+  @Inject
+  PratoMapper pratoMapper;
+
   @GET
   @Path("{idRestaurante}/pratos")
   @Tag(name = "prato")
-  public List<Restaurante> buscarPratos(@PathParam("idRestaurante") Long idRestaurante) {
+  public List<PratoDTO> buscarPratos(@PathParam("idRestaurante") Long idRestaurante) {
     Optional<Restaurante> restauranteOp = Restaurante.findByIdOptional(idRestaurante);
     if (restauranteOp.isEmpty()) {
       throw new NotFoundException("Restaurante não existe");
     }
-    return Prato.list("resturante", restauranteOp.get());
+    Stream<Prato> pratos = Prato.stream("restaurante", restauranteOp.get());
+    return pratos.map(p -> pratoMapper.toDTO(p)).collect(Collectors.toList());
   }
 
   @POST
   @Path("{idRestaurante}/pratos")
   @Tag(name = "prato")
   @Transactional
-  public Response adicionarPrato(@PathParam("idRestaurante") Long idRestaurante, Prato dto) {
+  @APIResponse(responseCode = "201", description = "Caso prato seja cadastrado com sucesso")
+  public Response adicionarPrato(@PathParam("idRestaurante") Long idRestaurante, AdcionarPratoDTO dto) {
     Optional <Restaurante> restauranteOp = Restaurante.findByIdOptional(idRestaurante);
     if (restauranteOp.isEmpty()) {
       throw new NotFoundException("Restaurante não existe");
     }
-    Prato prato = new Prato();
-    prato.nome = dto.nome;
-    prato.descricao = dto.descricao;
-
-    prato.preco = dto.preco;
+    Prato prato = pratoMapper.toPrato(dto);
     prato.restaurante = restauranteOp.get();
     prato.persist();
     return Response.status(Status.CREATED).build();
   }
 
   @PUT
-  @Path("{idRestaurante}/pratos{id}")
+  @Path("{idRestaurante}/pratos{idPrato}")
   @Tag(name = "prato")
   @Transactional
-  public void  atualizarPrato(@PathParam("idRestaurante") Long idRestaurante, @PathParam("id") Long id, Prato dto) {
+  public void  atualizarPrato(@PathParam("idRestaurante") Long idRestaurante, @PathParam("idPrato") Long idPrato, AtualizarPratoDTO dto) {
     Optional<Restaurante> restauranteOp = Restaurante.findByIdOptional(idRestaurante);
     if (restauranteOp.isEmpty()) {
       throw new NotFoundException("Restaurante não existe");
     }
 
-    Optional<Prato> pratoOp = Prato.findByIdOptional(id);
+    Optional<Prato> pratoOp = Prato.findByIdOptional(idPrato);
 
     if (pratoOp.isEmpty()) {
       throw new NotFoundException("Prato não existe");
     }
     Prato prato = pratoOp.get();
-    prato.preco = dto.preco;
+    pratoMapper.toPrato(dto, prato);
     prato.persist();
   }
 
   @DELETE
-  @Path("{idRestaurante}/pratos/{id}")
+  @Path("{idRestaurante}/pratos/{idPrato}")
   @Tag(name = "prato")
   @Transactional
-  public void delete (@PathParam("idRestaurante") Long idRestaurante, @PathParam("id") Long id) {
+  public void RemoverPrato(@PathParam("idRestaurante") Long idRestaurante, @PathParam("idPrato") Long idPrato) {
     Optional<Restaurante> restauranteOp = Restaurante.findByIdOptional(idRestaurante);
     if (restauranteOp.isEmpty()) {
       throw new NotFoundException("Restaurante não existe");
     }
 
-    Optional<Prato> pratoOp = Prato.findByIdOptional(id);
+    Optional<Prato> pratoOp = Prato.findByIdOptional(idPrato);
     pratoOp.ifPresentOrElse(Prato::delete, () -> {
       throw new NotFoundException();
     });
