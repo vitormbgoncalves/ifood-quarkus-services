@@ -10,6 +10,7 @@ public class Localizacao {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   public Long id;
 
-  public double latitude;
-  public double longitude;
+  public Double latitude;
+
+  public Double longitude;
 }
