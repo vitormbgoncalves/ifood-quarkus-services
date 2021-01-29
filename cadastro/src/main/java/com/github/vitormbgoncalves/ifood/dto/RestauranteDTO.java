@@ -9,4 +9,6 @@ public class RestauranteDTO {
   public String nome;
 
   public LocalizacaoDTO localizacao;
+
+  public String dataCriacao;
 }

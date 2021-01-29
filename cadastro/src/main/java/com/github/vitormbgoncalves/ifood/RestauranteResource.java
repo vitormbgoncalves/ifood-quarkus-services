@@ -1,6 +1,9 @@
 package com.github.vitormbgoncalves.ifood;
 
 import com.github.vitormbgoncalves.ifood.dto.*;
+import com.github.vitormbgoncalves.ifood.infra.ConstraintViolationResponse;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
@@ -25,6 +28,9 @@ public class RestauranteResource {
   @Inject
   RestauranteMapper restauranteMapper;
 
+  @Inject
+  PratoMapper pratoMapper;
+
   @GET
   public List<RestauranteDTO> buscarRestaurantes(){
     Stream<Restaurante> restaurantes = Restaurante.streamAll();
@@ -34,6 +40,7 @@ public class RestauranteResource {
   @POST
   @Transactional
   @APIResponse(responseCode = "201", description = "Caso restaurante seja cadastrado com sucesso")
+  @APIResponse(responseCode = "400", content = @Content(schema = @Schema(allOf = ConstraintViolationResponse.class)))
   public Response adicionarRestaurante(@Valid AdcionarRestauranteDTO dto) {
     Restaurante restaurante = restauranteMapper.toRestaurante(dto);
     restaurante.persist();
@@ -66,9 +73,6 @@ public class RestauranteResource {
 
   //Pratos
 
-  @Inject
-  PratoMapper pratoMapper;
-
   @GET
   @Path("{idRestaurante}/pratos")
   @Tag(name = "prato")
@@ -98,7 +102,7 @@ public class RestauranteResource {
   }
 
   @PUT
-  @Path("{idRestaurante}/pratos{idPrato}")
+  @Path("{idRestaurante}/pratos/{idPrato}")
   @Tag(name = "prato")
   @Transactional
   public void  atualizarPrato(@PathParam("idRestaurante") Long idRestaurante, @PathParam("idPrato") Long idPrato, AtualizarPratoDTO dto) {
