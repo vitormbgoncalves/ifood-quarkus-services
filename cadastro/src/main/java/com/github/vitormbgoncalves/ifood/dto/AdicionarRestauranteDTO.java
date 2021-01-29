@@ -11,7 +11,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @ValidDTO
-public class AdcionarRestauranteDTO implements DTO {
+public class AdicionarRestauranteDTO implements DTO {
 
   @NotEmpty
   @NotNull

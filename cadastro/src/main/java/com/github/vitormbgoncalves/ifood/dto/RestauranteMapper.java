@@ -6,10 +6,11 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "CDI", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+
+@Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface RestauranteMapper {
 
-  public Restaurante toRestaurante(AdcionarRestauranteDTO dto);
+  public Restaurante toRestaurante(AdicionarRestauranteDTO dto);
 
   public void toRestaurante(AtualizarRestuaranteDTO dto, @MappingTarget Restaurante restaurante);
 
