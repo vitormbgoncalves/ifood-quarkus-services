@@ -1,2 +1,12 @@
-package com.github.vitormbgoncalves.ifood;public class Prato {
+package com.github.vitormbgoncalves.ifood;
+
+import org.bson.types.Decimal128;
+
+public class Prato {
+
+  public String nome;
+
+  public String descricao;
+
+  public Decimal128 preco;
 }

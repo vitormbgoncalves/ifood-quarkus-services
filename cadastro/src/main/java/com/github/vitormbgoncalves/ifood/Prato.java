@@ -20,7 +20,7 @@ public class Prato extends PanacheEntityBase {
   public String descricao;
 
   @ManyToOne
-  public  Restaurante restaurante;
+  public Restaurante restaurante;
 
   public BigDecimal preco;
 }

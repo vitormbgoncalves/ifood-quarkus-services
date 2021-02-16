@@ -1,2 +1,5 @@
-package com.github.vitormbgoncalves.ifood;public class PratoNoCarrinhho {
+package com.github.vitormbgoncalves.ifood;
+
+public class PratoNoCarrinhho {
+  public Long prato;
 }

@@ -26,7 +26,7 @@ public class Prato {
   public static Multi<PratoDTO> findAll(PgPool pgPool) {
     return pgPool.query("select * from prato").execute()
         .onItem().transformToMulti(set -> Multi.createFrom().items(() ->
-        StreamSupport.stream(set.spliterator(), false)))
+            StreamSupport.stream(set.spliterator(), false)))
         .onItem().transform(PratoDTO::from);
   }
 

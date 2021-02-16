@@ -9,13 +9,15 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-@Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE })
+@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = { ValidDTOValidator.class })
+@Constraint(validatedBy = {ValidDTOValidator.class})
 @Documented
 public @interface ValidDTO {
 
   String message() default "{com.github.vitormbgoncalves.ifood.cadastro.infra.ValidDTO.message}";
+
   Class<?>[] groups() default {};
+
   Class<? extends Payload>[] payload() default {};
 }

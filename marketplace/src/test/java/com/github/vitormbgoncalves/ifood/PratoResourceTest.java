@@ -2,6 +2,7 @@ package com.github.vitormbgoncalves.ifood;
 
 
 import static io.restassured.RestAssured.given;
+
 import org.junit.jupiter.api.Test;
 import io.quarkus.test.junit.QuarkusTest;
 

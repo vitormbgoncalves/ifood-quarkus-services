@@ -78,7 +78,7 @@ public class RestauranteResource {
   @Transactional
   public void atualizarRestaurante(@PathParam("idRestaurante") Long idRestaurante, AtualizarRestuaranteDTO dto) {
     Optional<Restaurante> restauranteOp = Restaurante.findByIdOptional(idRestaurante);
-    if(restauranteOp.isEmpty()) {
+    if (restauranteOp.isEmpty()) {
       throw new NotFoundException();
     }
     Restaurante restaurante = restauranteOp.get();
@@ -117,7 +117,7 @@ public class RestauranteResource {
   @Transactional
   @APIResponse(responseCode = "201", description = "Caso prato seja cadastrado com sucesso")
   public Response adicionarPrato(@PathParam("idRestaurante") Long idRestaurante, AdcionarPratoDTO dto) {
-    Optional <Restaurante> restauranteOp = Restaurante.findByIdOptional(idRestaurante);
+    Optional<Restaurante> restauranteOp = Restaurante.findByIdOptional(idRestaurante);
     if (restauranteOp.isEmpty()) {
       throw new NotFoundException("Restaurante não existe");
     }
@@ -131,7 +131,7 @@ public class RestauranteResource {
   @Path("{idRestaurante}/pratos/{idPrato}")
   @Tag(name = "prato")
   @Transactional
-  public void  atualizarPrato(@PathParam("idRestaurante") Long idRestaurante, @PathParam("idPrato") Long idPrato, AtualizarPratoDTO dto) {
+  public void atualizarPrato(@PathParam("idRestaurante") Long idRestaurante, @PathParam("idPrato") Long idPrato, AtualizarPratoDTO dto) {
     Optional<Restaurante> restauranteOp = Restaurante.findByIdOptional(idRestaurante);
     if (restauranteOp.isEmpty()) {
       throw new NotFoundException("Restaurante não existe");

@@ -19,7 +19,7 @@ import org.jose4j.jwt.NumericDate;
 
 /**
  * Utilities for generating a JWT for testing
- *
+ * <p>
  * Peguei nesse endereço
  * https://quarkus.io/guides/security-jwt
  */
@@ -34,7 +34,7 @@ public class TokenUtils {
    * test resource key, possibly with invalid fields.
    *
    * @param jsonResName - name of test resources file
-   * @param timeClaims - used to return the exp, iat, auth_time claims
+   * @param timeClaims  - used to return the exp, iat, auth_time claims
    * @return the JWT string
    * @throws Exception on parse failure
    */
