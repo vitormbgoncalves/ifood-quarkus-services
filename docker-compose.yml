@@ -2,7 +2,7 @@ version: "3.8"
 services:
   postgres_cadastro:
     container_name: postgres_cadastro_ifood
-    image: postgres:12.2
+    image: debezium/example-postgres # essa versao vem com as configuracoes necessarias para o connector do debezium
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: minhasenhasecreta
@@ -99,7 +99,6 @@ services:
   # se ocorrer [1]: max virtual memory areas vm.max_map_count [65530] is too low,
   # increase to at least [262144]
   # sudo sysctl -w vm.max_map_count=262144
-
   elastic:
     container_name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
@@ -132,3 +131,23 @@ services:
     network_mode: "host"
     depends_on:
       - elastic
+
+  #roda na 8083
+  connect:
+    container_name: connect
+    image: debezium/connect:1.1
+    environment:
+     - BOOTSTRAP_SERVERS=kafka:9092
+     - GROUP_ID=1
+     - CONFIG_STORAGE_TOPIC=my_connect_configs
+     - OFFSET_STORAGE_TOPIC=my_connect_offsets
+     - STATUS_STORAGE_TOPIC=my_connect_statuses
+    ports:
+     - 8083:8083
+    links:
+     - kafka
+     - postgres_cadastro
+    depends_on:
+      - kafka
+      - zookeeper
+      - postgres_cadastro    
