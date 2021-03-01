@@ -2,6 +2,9 @@ package com.github.vitormbgoncalves.ifood;
 
 import com.github.vitormbgoncalves.ifood.dto.*;
 import com.github.vitormbgoncalves.ifood.infra.ConstraintViolationResponse;
+import org.eclipse.microprofile.jwt.Claim;
+import org.eclipse.microprofile.jwt.Claims;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.SimplyTimed;
 import org.eclipse.microprofile.metrics.annotation.Timed;
@@ -51,6 +54,13 @@ public class RestauranteResource {
   @Channel("restaurantes")
   Emitter<String> emitter;
 
+  @Inject
+  JsonWebToken jwt;
+
+  @Inject
+  @Claim(standard = Claims.sub)
+  String sub;
+
   @GET
   @Counted(name = "Quantidade de busca Restaurante")
   @SimplyTimed(name = "Tempo simples de busca")
@@ -66,6 +76,7 @@ public class RestauranteResource {
   @APIResponse(responseCode = "400", content = @Content(schema = @Schema(allOf = ConstraintViolationResponse.class)))
   public Response adicionarRestaurante(@Valid AdicionarRestauranteDTO dto) {
     Restaurante restaurante = restauranteMapper.toRestaurante(dto);
+    restaurante.proprietario = sub;
     restaurante.persist();
     Jsonb create = JsonbBuilder.create();
     String json = create.toJson(restaurante);
@@ -82,6 +93,10 @@ public class RestauranteResource {
       throw new NotFoundException();
     }
     Restaurante restaurante = restauranteOp.get();
+    if (!restaurante.proprietario.equals(sub)) {
+      throw new ForbiddenException();
+    }
+
     restauranteMapper.toRestaurante(dto, restaurante);
     restaurante.persist();
   }
@@ -91,6 +106,10 @@ public class RestauranteResource {
   @Transactional
   public void removerResturante(@PathParam("idRestaurante") Long idRestaurante) {
     Optional<Restaurante> restauranteOp = Restaurante.findByIdOptional(idRestaurante);
+
+    if (!restauranteOp.get().proprietario.equals(sub)) {
+      throw new ForbiddenException();
+    }
 
     restauranteOp.ifPresentOrElse(Restaurante::delete, () -> {
       throw new NotFoundException();
