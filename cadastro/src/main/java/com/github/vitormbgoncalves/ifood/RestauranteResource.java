@@ -22,8 +22,6 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -52,7 +50,7 @@ public class RestauranteResource {
 
   @Inject
   @Channel("restaurantes")
-  Emitter<String> emitter;
+  Emitter<Restaurante> emitter;
 
   @Inject
   JsonWebToken jwt;
@@ -78,9 +76,7 @@ public class RestauranteResource {
     Restaurante restaurante = restauranteMapper.toRestaurante(dto);
     restaurante.proprietario = sub;
     restaurante.persist();
-    Jsonb create = JsonbBuilder.create();
-    String json = create.toJson(restaurante);
-    emitter.send(json);
+    emitter.send(restaurante);
     return Response.status(Status.CREATED).build();
   }
 
