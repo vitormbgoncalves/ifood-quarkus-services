@@ -1,4 +1,4 @@
-# Código criado no curso de Desenvolvimento Web com Quarkus na Udemy
+# Código criado no curso de Desenvolvimento Web com Quarkus do Vinicius Ferraz.
 
 Curso disponível na Udemy!
 
