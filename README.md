@@ -8,7 +8,7 @@
 
 This project was developed based on Udemy's course [*__Desenvolvimento Web com Quarkus__*](https://www.udemy.com/course/des-web-quarkus/), taught by [Vinicius Ferraz](https://github.com/viniciusfcf).
 
-The objective of this project was to create three microservices for a food delivery system, based on the iFood app functionalities. This project was built with Quarkus: Supersonic Subatomic Java framework and its main extensions, Microprofile implementation, JUnit 5, Testcontainers, Database Rider, REST Assured, MapStruct, Keycloak, Jaeger, Prometheus, Grafana, Elastic Stack, Apache ActiveMQ, Apache Kafka, Kubernetes and GraalVM.
+The objective of this project was to create three microservices for a food delivery system, based on the iFood app functionalities. This project was built with Quarkus: Supersonic Subatomic Java framework and its main extensions, Microprofile implementation, MongoDB, PostgreSQL, JUnit 5, Testcontainers, Database Rider, REST Assured, MapStruct, Keycloak, Jaeger, Prometheus, Grafana, Elastic Stack, Apache ActiveMQ, Apache Kafka, Kubernetes and GraalVM.
 
 If you want to learn more about Quarkus, please visit its website: https://quarkus.io/.
 
